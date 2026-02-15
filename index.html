@@ -25,36 +25,40 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    /* invisible max layout area (fits on one screen) */
     .wrap{
-      width: min(1100px, 92vw);
-      height: min(680px, 92vh);
+      width: min(1200px, 96vw);
+      height: min(820px, 96vh);
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap: 14px;
+      gap: 18px;
       padding: 12px;
       box-sizing:border-box;
       text-align:center;
     }
 
+    /* Bigger + clearer on screen */
     .hero{
-      width: min(980px, 92vw);
-      max-height: 80%;
+      width: min(1150px, 96vw);
+      max-height: 82vh;
       height:auto;
       object-fit:contain;
       display:block;
+
+      /* “crisper” rendering for line art */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
 
     .pubkey{
       font-size: 14px;
       color: var(--muted);
       word-break: break-word;
-      max-width: min(980px, 92vw);
-      padding: 8px 10px;
-      border: 1px solid rgba(0,0,0,.15);
-      border-radius: 10px;
+      max-width: min(1000px, 96vw);
+      padding: 10px 12px;
+      border: 1px solid rgba(0,0,0,.18);
+      border-radius: 12px;
     }
   </style>
 </head>
