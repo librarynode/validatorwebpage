@@ -9,11 +9,8 @@
       --bg:#fff;
       --fg:#000;
       --muted:#333;
-      --box-w: 520px;
-      --radius: 14px;
     }
 
-    /* Full-viewport page, no scroll */
     html, body{
       height:100%;
       margin:0;
@@ -28,7 +25,7 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    /* Invisible max layout area (matches your mock “black box” size) */
+    /* invisible max layout area (fits on one screen) */
     .wrap{
       width: min(1100px, 92vw);
       height: min(680px, 92vh);
@@ -36,92 +33,28 @@
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:16px;
-      padding:12px;
+      gap: 14px;
+      padding: 12px;
       box-sizing:border-box;
+      text-align:center;
     }
 
-    /* Graphic: scaled so the monitor always fits below */
     .hero{
       width: min(980px, 92vw);
-      max-height: 55%;
+      max-height: 80%;
       height:auto;
       object-fit:contain;
       display:block;
     }
 
-    /* Monitor box */
-    .monitor{
-      width:min(var(--box-w),94vw);
-      border:2px solid #000;
-      border-radius:var(--radius);
-      background:#fff;
-      box-shadow: 0 10px 30px rgba(0,0,0,.10);
-      overflow:hidden;
-      position:relative;
-    }
-
-    /* subtle scanlines */
-    .monitor::before{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(to bottom, rgba(0,0,0,.035), rgba(0,0,0,0) 2px);
-      background-size:100% 6px;
-      opacity:.35;
-      pointer-events:none;
-    }
-
-    .pad{padding:18px 18px 16px; position:relative;}
-
-    .toprow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      font-weight:700;
-      letter-spacing:.4px;
-      font-size:14px;
-    }
-
-    .row{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-top:14px;
-      font-weight:700;
-      font-size:14px;
-    }
-
-    /* blinking LED */
-    .led{
-      width:10px;height:10px;border-radius:999px;
-      background:#0a0;
-      box-shadow: 0 0 0 2px rgba(0,0,0,.15);
-      animation: blink 1.1s infinite;
-    }
-    .led.down{ background:#b00; animation:none; }
-    @keyframes blink{ 0%,45%{opacity:1;} 55%,100%{opacity:.12;} }
-
-    /* “code text” grid */
-    .kv{
-      margin-top:10px;
-      display:grid;
-      grid-template-columns: 120px 1fr;
-      column-gap:10px;
-      row-gap:6px;
-      font-size:13px;
-      line-height:1.25;
-    }
-    .k{color:var(--muted);}
-    .v{word-break:break-word;}
-
-    .footer{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
+    .pubkey{
+      font-size: 14px;
+      color: var(--muted);
+      word-break: break-word;
+      max-width: min(980px, 92vw);
+      padding: 8px 10px;
+      border: 1px solid rgba(0,0,0,.15);
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -129,82 +62,9 @@
 <body>
   <div class="wrap">
     <img class="hero" src="assets/graphic.jpg" alt="Graphic" />
-
-    <div class="monitor" aria-live="polite">
-      <div class="pad">
-        <div class="toprow">
-          <div>POSTFIAT_VALIDATOR</div>
-          <div>[01]</div>
-        </div>
-
-        <div class="row">
-          <div id="led" class="led"></div>
-          <div id="updown">LOADING</div>
-        </div>
-
-        <div class="kv">
-          <div class="k">Pubkey</div>
-          <div class="v" id="pubkey">nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr</div>
-
-          <div class="k">Network</div><div class="v" id="network">PostFiat Testnet</div>
-          <div class="k">Version</div><div class="v" id="version">—</div>
-          <div class="k">Status</div><div class="v" id="state">—</div>
-          <div class="k">Peers</div><div class="v" id="peers">—</div>
-          <div class="k">Uptime</div><div class="v" id="uptime">—</div>
-        </div>
-
-        <div class="footer">
-          <div id="updated">Updated: —</div>
-          <div id="hint"></div>
-        </div>
-      </div>
+    <div class="pubkey">
+      nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr
     </div>
   </div>
-
-  <script>
-    // We'll fetch a local file in the repo:
-    const STATUS_ENDPOINT = "status.json";
-
-    const el = (id) => document.getElementById(id);
-
-    function setDown(msg){
-      el("led").classList.add("down");
-      el("updown").textContent = "DOWN";
-      el("state").textContent = msg || "Unreachable";
-      el("updated").textContent = "Updated: " + new Date().toLocaleString();
-    }
-
-    function setUp(data){
-      el("led").classList.remove("down");
-      el("updown").textContent = "UP";
-
-      // Keep your default pubkey if the JSON doesn’t provide one
-      el("pubkey").textContent  = data.pubkey ?? el("pubkey").textContent;
-
-      el("network").textContent = data.network ?? el("network").textContent;
-      el("version").textContent = data.version ?? "—";
-      el("state").textContent   = data.state ?? "—";
-      el("peers").textContent   = (data.peers ?? "—").toString();
-      el("uptime").textContent  = data.uptime ?? "—";
-
-      el("updated").textContent = "Updated: " + new Date().toLocaleString();
-    }
-
-    async function poll(){
-      try{
-        const res = await fetch(STATUS_ENDPOINT, { cache: "no-store" });
-        if(!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
-        setUp(data);
-        el("hint").textContent = "";
-      } catch(e){
-        setDown(e.message);
-        el("hint").textContent = "Waiting for status.json";
-      }
-    }
-
-    poll();
-    setInterval(poll, 5000);
-  </script>
 </body>
 </html>
