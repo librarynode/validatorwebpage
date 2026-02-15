@@ -9,29 +9,44 @@
       --bg:#fff;
       --fg:#000;
       --muted:#333;
-      --box-w: 560px;
+      --box-w: 520px;
       --radius: 14px;
     }
 
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);}
+    /* Full-viewport page, no scroll */
+    html, body{
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      overflow:hidden;
+    }
+
     body{
       display:grid;
       place-items:center;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
+    /* Invisible max layout area (matches your mock “black box” size) */
     .wrap{
-      width:min(1100px,94vw);
-      display:grid;
-      justify-items:center;
-      gap:18px;
-      padding:38px 0;
+      width: min(1100px, 92vw);
+      height: min(680px, 92vh);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      padding:12px;
+      box-sizing:border-box;
     }
 
-    /* Your graphic (we'll upload it next step) */
+    /* Graphic: scaled so the monitor always fits below */
     .hero{
-      width:min(1100px,94vw);
+      width: min(980px, 92vw);
+      max-height: 55%;
       height:auto;
+      object-fit:contain;
       display:block;
     }
 
@@ -113,7 +128,6 @@
 
 <body>
   <div class="wrap">
-    <!-- Upload your graphic next step as assets/graphic.png -->
     <img class="hero" src="assets/graphic.jpg" alt="Graphic" />
 
     <div class="monitor" aria-live="polite">
@@ -129,8 +143,10 @@
         </div>
 
         <div class="kv">
-          <div class="k">Pubkey</div><div class="v" id="pubkey">—</div>
-          <div class="k">Network</div><div class="v" id="network">—</div>
+          <div class="k">Pubkey</div>
+          <div class="v" id="pubkey">nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr</div>
+
+          <div class="k">Network</div><div class="v" id="network">PostFiat Testnet</div>
           <div class="k">Version</div><div class="v" id="version">—</div>
           <div class="k">Status</div><div class="v" id="state">—</div>
           <div class="k">Peers</div><div class="v" id="peers">—</div>
@@ -146,7 +162,7 @@
   </div>
 
   <script>
-    // For now we'll fetch a local file in the repo (we'll create it in a later step):
+    // We'll fetch a local file in the repo:
     const STATUS_ENDPOINT = "status.json";
 
     const el = (id) => document.getElementById(id);
@@ -162,8 +178,10 @@
       el("led").classList.remove("down");
       el("updown").textContent = "UP";
 
-      el("pubkey").textContent  = data.pubkey ?? "—";
-      el("network").textContent = data.network ?? "—";
+      // Keep your default pubkey if the JSON doesn’t provide one
+      el("pubkey").textContent  = data.pubkey ?? el("pubkey").textContent;
+
+      el("network").textContent = data.network ?? el("network").textContent;
       el("version").textContent = data.version ?? "—";
       el("state").textContent   = data.state ?? "—";
       el("peers").textContent   = (data.peers ?? "—").toString();
