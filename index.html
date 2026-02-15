@@ -38,7 +38,6 @@
       text-align:center;
     }
 
-    /* Bigger + clearer on screen */
     .hero{
       width: min(1150px, 96vw);
       max-height: 82vh;
@@ -46,9 +45,20 @@
       object-fit:contain;
       display:block;
 
-      /* “crisper” rendering for line art */
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
+    }
+
+    .twitter{
+      font-size:16px;
+      text-decoration:none;
+      border-bottom:1px solid #000;
+      padding-bottom:2px;
+      transition: opacity .2s ease;
+    }
+
+    .twitter:hover{
+      opacity:0.6;
     }
 
     .pubkey{
@@ -66,6 +76,11 @@
 <body>
   <div class="wrap">
     <img class="hero" src="assets/graphic.jpg" alt="Graphic" />
+
+    <a class="twitter" href="https://x.com/journalnode" target="_blank" rel="noopener">
+      Journal Node Twitter
+    </a>
+
     <div class="pubkey">
       nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr
     </div>
