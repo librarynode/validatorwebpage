@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Validator</title>
+
   <style>
     :root{
       --bg:#fff;
@@ -49,16 +50,12 @@
       image-rendering: crisp-edges;
     }
 
-    .twitter{
-      font-size:16px;
-      text-decoration:none;
-      border-bottom:1px solid #000;
-      padding-bottom:2px;
-      transition: opacity .2s ease;
-    }
-
-    .twitter:hover{
-      opacity:0.6;
+    .label{
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #000;
+      margin-top: 8px;
     }
 
     .pubkey{
@@ -69,6 +66,13 @@
       padding: 10px 12px;
       border: 1px solid rgba(0,0,0,.18);
       border-radius: 12px;
+      text-decoration: none;
+      transition: all .15s ease;
+    }
+
+    .pubkey:hover{
+      background: rgba(0,0,0,.04);
+      border-color: rgba(0,0,0,.35);
     }
   </style>
 </head>
@@ -77,9 +81,17 @@
   <div class="wrap">
     <img class="hero" src="assets/graphic.jpg" alt="Graphic" />
 
-    <div class="pubkey">
-      nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr
+    <div class="label">
+      Post Fiat Validator Public Key
     </div>
+
+    <a class="pubkey"
+       href="https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr"
+       target="_blank"
+       rel="noopener">
+      nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr
+    </a>
+
   </div>
 </body>
 </html>
