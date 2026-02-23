@@ -50,6 +50,20 @@
       image-rendering: crisp-edges;
     }
 
+    /* NEW: Twitter link styling */
+    .twitter{
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: opacity .15s ease;
+      margin: 6px 0;
+    }
+
+    .twitter:hover{
+      opacity: 0.6;
+    }
+
     .label{
       font-size: 13px;
       letter-spacing: 1.5px;
@@ -81,6 +95,14 @@
 <body>
   <div class="wrap">
     <img class="hero" src="assets/graphic.jpg" alt="Graphic" />
+
+    <!-- NEW: Twitter Link -->
+    <a class="twitter"
+       href="https://x.com/WizBubba"
+       target="_blank"
+       rel="noopener">
+      @wizbubba
+    </a>
 
     <div class="label">
       Post Fiat Validator Public Key
