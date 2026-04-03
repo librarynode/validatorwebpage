@@ -121,6 +121,7 @@
     .hero-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      align-items: start;
       gap: 24px;
       border-radius: var(--radius-lg);
       padding: 28px;
@@ -205,7 +206,7 @@
     .hero-proof {
       display: grid;
       gap: 16px;
-      align-self: stretch;
+      align-self: start;
       min-width: 0;
     }
 
@@ -295,7 +296,6 @@
     .faq-card,
     .footer-card {
       padding: 18px;
-      min-height: 100%;
       min-width: 0;
     }
 
@@ -507,6 +507,15 @@
         width: 100%;
         justify-content: center;
         text-align: center;
+      }
+
+      .hero-proof,
+      .facts-grid,
+      .status-grid,
+      .proof-grid,
+      .faq-grid,
+      .footer-grid {
+        align-items: start;
       }
 
       .status-card::before {
