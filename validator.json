@@ -8,9 +8,9 @@
   "validator_public_key": "nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr",
   "domain": "pft.wizbubba.xyz",
   "homepage": "https://pft.wizbubba.xyz/",
-  "journal_node": "https://pft.wizbubba.xyz/journalnode/",
+  "change_log": "https://pft.wizbubba.xyz/journalnode/",
   "domain_proof": "https://pft.wizbubba.xyz/.well-known/pft-ledger.toml",
-  "purpose": "Validator trust surface for identity, proof packaging, status visibility, and journal updates.",
+  "purpose": "Validator trust surface for identity, proof packaging, status visibility, and change log updates.",
   "verification_links": {
     "explorer_details": "https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr/details",
     "validator_board": "https://explorer.testnet.postfiat.org/network/validators",

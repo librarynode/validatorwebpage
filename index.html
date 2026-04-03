@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Post Fiat Validator | wizbubba | nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr</title>
-  <meta name="description" content="Public verification surface for the Post Fiat validator operated by @wizbubba. Verify the validator public key, journal node, status, and third-party proof links.">
+  <meta name="description" content="Public verification surface for the Post Fiat validator operated by @wizbubba. Verify the validator public key, change log, status, and third-party proof links.">
   <link rel="canonical" href="https://pft.wizbubba.xyz/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Post Fiat Validator | wizbubba">
-  <meta property="og:description" content="Verify the public key, status, journal node, and external proof surfaces for this Post Fiat validator.">
+  <meta property="og:description" content="Verify the public key, status, change log, and external proof surfaces for this Post Fiat validator.">
   <meta property="og:url" content="https://pft.wizbubba.xyz/">
   <meta property="og:image" content="https://pft.wizbubba.xyz/assets/graphic.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -558,7 +558,7 @@
               "name": "What does this validator page do?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "It is a public trust surface for the wizbubba Post Fiat validator, packaging the validator public key, proof links, status metrics, and journal updates in one place."
+                "text": "It is a public trust surface for the wizbubba Post Fiat validator, packaging the validator public key, proof links, status metrics, and change log updates in one place."
               }
             },
             {
@@ -571,10 +571,10 @@
             },
             {
               "@type": "Question",
-              "name": "What is the Journal Node?",
+              "name": "What is the change log?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The Journal Node is the running public log for validator operations, updates, and related project context."
+                "text": "The change log is the running public log for validator operations, site updates, and related proof changes."
               }
             }
           ]
@@ -591,7 +591,7 @@
         <a class="pill-link" href="#validator-facts">Facts</a>
         <a class="pill-link" href="#verification">Verification</a>
         <a class="pill-link" href="#live-status">Live Status</a>
-        <a class="pill-link" href="/journalnode/">Journal Node</a>
+        <a class="pill-link" href="/journalnode/">Change Log</a>
         <a class="pill-link" href="https://x.com/WizBubba" target="_blank" rel="noopener">@wizbubba</a>
       </div>
     </nav>
@@ -603,11 +603,11 @@
         <p class="lede">
           This page is the public trust surface for validator
           <code>nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr</code>.
-          Use it to verify validator identity, inspect explorer-backed status, review third-party proof links, and follow ongoing Journal Node updates.
+          Use it to verify validator identity, inspect explorer-backed status, review third-party proof links, and follow ongoing change log updates.
         </p>
         <div class="hero-actions">
           <a class="button button-primary" href="https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr/details" target="_blank" rel="noopener">Verify in Explorer</a>
-          <a class="button button-secondary" href="/journalnode/">View the Journal Node</a>
+          <a class="button button-secondary" href="/journalnode/">View the Change Log</a>
         </div>
         <div class="signal-strip" aria-label="Validator trust cues">
           <span class="signal">Exact public key disclosed</span>
@@ -625,7 +625,7 @@
         </div>
         <div class="hero-card">
           <h2>Why this page exists</h2>
-          <p class="caption">This site exists to make verification easier. It gives a stable public key reference, links to third-party proof surfaces, publishes machine-readable endpoints, and keeps a journal log of validator-related updates.</p>
+          <p class="caption">This site exists to make verification easier. It gives a stable public key reference, links to third-party proof surfaces, publishes machine-readable endpoints, and keeps a change log of validator-related updates.</p>
         </div>
       </aside>
     </header>
@@ -685,22 +685,22 @@
         </div>
       </section>
 
-      <section class="section" aria-labelledby="journal-node-heading">
+      <section class="section" aria-labelledby="change-log-heading">
         <div class="section-head">
           <p class="section-kicker">Ongoing updates</p>
-          <h2 id="journal-node-heading">Journal Node</h2>
-          <p class="section-summary">The journal node is the running public log for validator operations, site updates, and related project context. It now has its own crawlable page, unique metadata, and timestamped entries.</p>
+          <h2 id="change-log-heading">Change Log</h2>
+          <p class="section-summary">The change log is the running public record for validator site updates, proof changes, and release notes. It has its own crawlable page and now auto-loads recent repository commits.</p>
         </div>
         <div class="journal-layout">
-          <div class="journal-box"><p>The homepage is the verification layer. The journal page is the chronological layer. Use the journal when you want to see what changed, when it changed, and where operational notes live.</p></div>
+          <div class="journal-box"><p>The homepage is the verification layer. The change log page is the chronological layer. Use it when you want to see what changed, when it changed, and which repo update introduced it.</p></div>
           <div class="journal-side">
-            <p class="list-note">Current journal coverage:</p>
+            <p class="list-note">Current change log coverage:</p>
             <ul>
               <li>validator site revisions</li>
               <li>proof and status source notes</li>
-              <li>project context links</li>
+              <li>repository-backed release entries</li>
             </ul>
-            <p style="margin-top: 14px;"><a class="inline-link" href="/journalnode/">View the Journal Node &rarr;</a></p>
+            <p style="margin-top: 14px;"><a class="inline-link" href="/journalnode/">View the Change Log &rarr;</a></p>
           </div>
         </div>
       </section>
@@ -714,7 +714,7 @@
         <div class="faq-grid">
           <article class="faq-card"><h3>What does this validator do?</h3><p>It is a Post Fiat testnet validator operated by @wizbubba. This site exists to package the validator's identity, proof links, and status context in one place.</p></article>
           <article class="faq-card"><h3>How do I verify this public key?</h3><p>Compare the public key shown here against the explorer details page, the machine-readable JSON endpoints on this site, and the domain attestation file in <code>/.well-known/</code>.</p></article>
-          <article class="faq-card"><h3>What is the Journal Node?</h3><p>It is the running public log for validator-related updates on this domain. It complements the homepage by giving chronological context instead of only a static summary.</p></article>
+          <article class="faq-card"><h3>What is the change log?</h3><p>It is the running public log for validator-related updates on this domain. It complements the homepage by giving chronological context instead of only a static summary.</p></article>
           <article class="faq-card"><h3>Where do the status metrics come from?</h3><p>The live status section is backed by the Post Fiat explorer source for this validator. If the explorer is unavailable, the site shows <code>Unavailable</code> instead of filling values from guesses.</p></article>
           <article class="faq-card"><h3>How often is this page updated?</h3><p>Static site content updates when the repo changes. The live status section refreshes from the approved explorer source on page load whenever the source is reachable.</p></article>
           <article class="faq-card"><h3>What is this page not?</h3><p>This is a validator trust surface, not a full explorer and not a general Post Fiat network explainer. It is intentionally narrow: identity, proof, status, and updates.</p></article>
