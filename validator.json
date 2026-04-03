@@ -1,0 +1,24 @@
+{
+  "operator": "wizbubba",
+  "contact": {
+    "x": "https://x.com/WizBubba"
+  },
+  "network": "post-fiat-testnet",
+  "location": "North America",
+  "validator_public_key": "nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr",
+  "domain": "pft.wizbubba.xyz",
+  "homepage": "https://pft.wizbubba.xyz/",
+  "journal_node": "https://pft.wizbubba.xyz/journalnode/",
+  "domain_proof": "https://pft.wizbubba.xyz/.well-known/pft-ledger.toml",
+  "purpose": "Validator trust surface for identity, proof packaging, status visibility, and journal updates.",
+  "verification_links": {
+    "explorer_details": "https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr/details",
+    "validator_board": "https://explorer.testnet.postfiat.org/network/validators",
+    "network_overview": "https://explorer.testnet.postfiat.org/"
+  },
+  "machine_readable_endpoints": {
+    "validator_json": "https://pft.wizbubba.xyz/validator.json",
+    "status_json": "https://pft.wizbubba.xyz/status.json"
+  },
+  "last_updated_utc": "2026-04-03T09:12:05Z"
+}

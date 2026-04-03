@@ -1,124 +1,789 @@
-<!doctype html>  
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Validator</title>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Post Fiat Validator | wizbubba | nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr</title>
+  <meta name="description" content="Public verification surface for the Post Fiat validator operated by @wizbubba. Verify the validator public key, journal node, status, and third-party proof links.">
+  <link rel="canonical" href="https://pft.wizbubba.xyz/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Post Fiat Validator | wizbubba">
+  <meta property="og:description" content="Verify the public key, status, journal node, and external proof surfaces for this Post Fiat validator.">
+  <meta property="og:url" content="https://pft.wizbubba.xyz/">
+  <meta property="og:image" content="https://pft.wizbubba.xyz/assets/graphic.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Post Fiat Validator | wizbubba">
+  <meta name="twitter:description" content="Public trust surface for validator identity, verification, and status.">
+  <meta name="theme-color" content="#0f1210">
   <style>
-    :root{
-      --bg:#fff;
-      --fg:#000;
-      --muted:#333;
+    :root {
+      --bg: #f5f1e8;
+      --paper: rgba(255, 252, 245, 0.86);
+      --panel: rgba(255, 250, 241, 0.92);
+      --panel-strong: #fffaf0;
+      --ink: #11110f;
+      --muted: #5f5a4f;
+      --accent: #9f2b00;
+      --accent-soft: rgba(159, 43, 0, 0.1);
+      --line: rgba(17, 17, 15, 0.12);
+      --shadow: 0 24px 60px rgba(17, 17, 15, 0.08);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --content-width: 1180px;
+      --sans: "Work Sans", "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
     }
 
-    html, body{
-      height:100%;
-      margin:0;
-      background:var(--bg);
-      color:var(--fg);
-      overflow:hidden;
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(159, 43, 0, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(31, 73, 54, 0.1), transparent 24%),
+        linear-gradient(180deg, #f4efe6 0%, #efe8db 52%, #f7f2e7 100%);
+      font-family: var(--sans);
+      line-height: 1.55;
     }
 
-    body{
-      display:grid;
-      place-items:center;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    code { font-family: var(--mono); font-size: 0.96em; }
+
+    .shell {
+      width: min(calc(100% - 32px), var(--content-width));
+      margin: 0 auto;
+      padding: 28px 0 72px;
     }
 
-    .wrap{
-      width: min(1200px, 96vw);
-      height: min(820px, 96vh);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap: 9px;
-      padding: 12px;
-      box-sizing:border-box;
-      text-align:center;
+    .topbar,
+    .hero-grid,
+    .section,
+    .footer-grid {
+      backdrop-filter: blur(14px);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
     }
 
-    .hero{
-      width: min(1150px, 96vw);
-      max-height: 82vh;
-      height:auto;
-      object-fit:contain;
-      display:block;
-
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-radius: 999px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
     }
 
-    /* NEW: Twitter link styling */
-    .twitter{
-      font-size: 14px;
-      color: var(--muted);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      transition: opacity .15s ease;
-      margin: 6px 0;
-    }
-
-    .twitter:hover{
-      opacity: 0.6;
-    }
-
-    .label{
-      font-size: 13px;
-      letter-spacing: 1.5px;
+    .topbar-title {
+      font-size: 0.88rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #000;
-      margin-top: 8px;
-    }
-
-    .pubkey{
-      font-size: 14px;
       color: var(--muted);
-      word-break: break-word;
-      max-width: min(1000px, 96vw);
-      padding: 10px 12px;
-      border: 1px solid rgba(0,0,0,.18);
-      border-radius: 12px;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      transition: all .15s ease;
     }
 
-    .pubkey:hover{
-      background: rgba(0,0,0,.04);
-      border-color: rgba(0,0,0,.35);
+    .topbar-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .pill-link {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      text-decoration: none;
+      font-size: 0.92rem;
+      background: rgba(255, 255, 255, 0.5);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .pill-link:hover,
+    .pill-link:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(17, 17, 15, 0.24);
+      background: rgba(255, 255, 255, 0.88);
+      outline: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 24px;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-self: center;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 0.84rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 5vw, 4.7rem);
+      max-width: 12ch;
+    }
+
+    h2 {
+      font-size: clamp(1.45rem, 2vw, 1.95rem);
+      margin-bottom: 10px;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 64ch;
+      color: var(--muted);
+      font-size: 1.04rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1px solid transparent;
+      font-weight: 600;
+      transition: transform 160ms ease, opacity 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible { transform: translateY(-1px); outline: none; }
+
+    .button-primary {
+      color: #fffaf5;
+      background: linear-gradient(135deg, #8d2500 0%, #b33f11 100%);
+      box-shadow: 0 18px 36px rgba(159, 43, 0, 0.18);
+    }
+
+    .button-secondary {
+      background: rgba(255, 255, 255, 0.64);
+      border-color: var(--line);
+    }
+
+    .hero-proof {
+      display: grid;
+      gap: 16px;
+      align-self: stretch;
+    }
+
+    .hero-card,
+    .fact-card,
+    .status-card,
+    .proof-card,
+    .faq-card,
+    .footer-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .hero-card {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-card figure { margin: 0; }
+
+    .hero-card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: calc(var(--radius-md) - 4px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .caption {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .signal-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .signal {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(159, 43, 0, 0.12);
+      font-size: 0.87rem;
+      color: var(--ink);
+    }
+
+    .main-grid { display: grid; gap: 24px; }
+
+    .section {
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+
+    .section-head { margin-bottom: 18px; }
+
+    .section-kicker {
+      margin: 0 0 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.78rem;
+    }
+
+    .section-summary {
+      margin: 0;
+      color: var(--muted);
+      max-width: 72ch;
+    }
+
+    .facts-grid, .status-grid, .proof-grid, .faq-grid, .footer-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .facts-grid, .status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .proof-grid, .faq-grid, .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .fact-card,
+    .status-card,
+    .proof-card,
+    .faq-card,
+    .footer-card {
+      padding: 18px;
+      min-height: 100%;
+    }
+
+    .fact-card dt,
+    .status-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+    }
+
+    .fact-card dd,
+    .status-value {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .fact-card dd.small,
+    .status-note,
+    .proof-card p,
+    .faq-card p,
+    .footer-card p,
+    .list-note {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .mono-value {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .status-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status-card::before {
+      content: "";
+      position: absolute;
+      inset: auto -22px -22px auto;
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(159, 43, 0, 0.08), transparent 70%);
+    }
+
+    .status-good { color: #185c39; }
+
+    .status-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1f8f52;
+      box-shadow: 0 0 0 rgba(31, 143, 82, 0.55);
+      animation: pulse-dot 1.8s ease-out infinite;
+      flex: 0 0 auto;
+    }
+
+    @keyframes pulse-dot {
+      0% {
+        transform: scale(0.92);
+        box-shadow: 0 0 0 0 rgba(31, 143, 82, 0.5);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(31, 143, 82, 0);
+      }
+      100% {
+        transform: scale(0.92);
+        box-shadow: 0 0 0 0 rgba(31, 143, 82, 0);
+      }
+    }
+
+    .proof-card h3,
+    .faq-card h3,
+    .footer-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.08rem;
+    }
+
+    .proof-card a,
+    .footer-card a,
+    .inline-link {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .proof-card p,
+    .faq-card p,
+    .footer-card p { margin: 0; }
+
+    .journal-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .journal-box,
+    .journal-side {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+    }
+
+    .journal-box p,
+    .journal-side p,
+    .journal-side ul {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .journal-side ul { padding-left: 18px; }
+    .journal-side li + li { margin-top: 8px; }
+
+    .endpoint-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .endpoint-item {
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+    }
+
+    .endpoint-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.96rem;
+    }
+
+    .footer-grid {
+      margin-top: 24px;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .status-loading { opacity: 0.72; }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .journal-layout,
+      .facts-grid,
+      .status-grid,
+      .proof-grid,
+      .faq-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        border-radius: 28px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      h1 { max-width: none; }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(calc(100% - 20px), var(--content-width));
+        padding-top: 16px;
+      }
+
+      .hero-grid,
+      .section,
+      .footer-grid { padding: 20px; }
+      .topbar { padding: 14px; }
     }
   </style>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Post Fiat Validator | wizbubba",
+          "url": "https://pft.wizbubba.xyz/"
+        },
+        {
+          "@type": "WebPage",
+          "name": "Post Fiat Validator",
+          "url": "https://pft.wizbubba.xyz/",
+          "description": "Public trust surface for the Post Fiat validator operated by wizbubba.",
+          "about": {
+            "@type": "Thing",
+            "name": "Post Fiat validator nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr"
+          }
+        },
+        {
+          "@type": "Person",
+          "name": "wizbubba",
+          "sameAs": [
+            "https://x.com/WizBubba"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does this validator page do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It is a public trust surface for the wizbubba Post Fiat validator, packaging the validator public key, proof links, status metrics, and journal updates in one place."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I verify the validator public key?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cross-check the public key on the explorer, compare it to the domain proof file, and review the machine-readable validator.json endpoint."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the Journal Node?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The Journal Node is the running public log for validator operations, updates, and related project context."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
 </head>
-
 <body>
-  <div class="wrap">
-    <img class="hero" src="assets/graphic.jpg" alt="Graphic" />
+  <div class="shell">
+    <nav class="topbar" aria-label="Primary">
+      <div class="topbar-title">Validator Trust Surface</div>
+      <div class="topbar-nav">
+        <a class="pill-link" href="#validator-facts">Facts</a>
+        <a class="pill-link" href="#verification">Verification</a>
+        <a class="pill-link" href="#live-status">Live Status</a>
+        <a class="pill-link" href="/journalnode/">Journal Node</a>
+        <a class="pill-link" href="https://x.com/WizBubba" target="_blank" rel="noopener">@wizbubba</a>
+      </div>
+    </nav>
 
-    <!-- NEW: Twitter Link -->
-    <a class="twitter"
-       href="https://x.com/WizBubba"
-       target="_blank"
-       rel="noopener">
-      @wizbubba
-    </a>
+    <header class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Post Fiat Network</p>
+        <h1>Post Fiat Validator operated by wizbubba</h1>
+        <p class="lede">
+          This page is the public trust surface for validator
+          <code>nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr</code>.
+          Use it to verify validator identity, inspect explorer-backed status, review third-party proof links, and follow ongoing Journal Node updates.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr/details" target="_blank" rel="noopener">Verify in Explorer</a>
+          <a class="button button-secondary" href="/journalnode/">View the Journal Node</a>
+        </div>
+        <div class="signal-strip" aria-label="Validator trust cues">
+          <span class="signal">Exact public key disclosed</span>
+          <span class="signal">Domain proof published</span>
+          <span class="signal">Explorer-backed status section</span>
+        </div>
+      </div>
 
-    <div class="label">
-      Post Fiat Validator Public Key
-    </div>
+      <aside class="hero-proof">
+        <div class="hero-card">
+          <figure>
+            <img src="/assets/graphic.jpg" alt="Black-and-white hero graphic for the wizbubba Post Fiat validator site">
+          </figure>
+          <p class="caption">Take the Post Fiat pill.</p>
+        </div>
+        <div class="hero-card">
+          <h2>Why this page exists</h2>
+          <p class="caption">This site exists to make verification easier. It gives a stable public key reference, links to third-party proof surfaces, publishes machine-readable endpoints, and keeps a journal log of validator-related updates.</p>
+        </div>
+      </aside>
+    </header>
 
-    <a class="pubkey"
-       href="https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr"
-       target="_blank"
-       rel="noopener">
-      nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr
-    </a>
+    <main class="main-grid">
+      <section class="section" id="validator-facts" aria-labelledby="validator-facts-heading">
+        <div class="section-head">
+          <p class="section-kicker">Core identity</p>
+          <h2 id="validator-facts-heading">Validator Facts</h2>
+          <p class="section-summary">The bounded facts below are the quickest way to confirm whose validator this is, which key it uses, which network it serves, and where proof and updates live.</p>
+        </div>
+        <div class="facts-grid">
+          <dl class="fact-card"><dt>Operator</dt><dd>@wizbubba</dd></dl>
+          <dl class="fact-card"><dt>Network</dt><dd>Post Fiat testnet</dd></dl>
+          <dl class="fact-card"><dt>Validator public key</dt><dd class="mono-value">nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr</dd></dl>
+          <dl class="fact-card"><dt>Domain proof</dt><dd><a class="inline-link" href="/.well-known/pft-ledger.toml">/.well-known/pft-ledger.toml</a></dd></dl>
+          <dl class="fact-card"><dt>Status</dt><dd id="facts-status" class="status-loading">Awaiting explorer data</dd></dl>
+          <dl class="fact-card"><dt>Version</dt><dd id="facts-version" class="status-loading">Awaiting explorer data</dd></dl>
+          <dl class="fact-card"><dt>Location</dt><dd>North America</dd></dl>
+          <dl class="fact-card"><dt>Last updated</dt><dd><time datetime="2026-04-03">2026-04-03</time></dd><dd class="small">Live status fields update from the explorer source at page load when available.</dd></dl>
+        </div>
+      </section>
 
-    <a class="pubkey" href="/journalnode" style="margin-top:10px;">
-      View the Journal Node →
-    </a>
+      <section class="section" id="verification" aria-labelledby="verification-heading">
+        <div class="section-head">
+          <p class="section-kicker">Proof packaging</p>
+          <h2 id="verification-heading">Verification &amp; External Proof</h2>
+          <p class="section-summary">Each proof surface has a job. This page links them directly and states what each one confirms, instead of leaving visitors or models to infer that on their own.</p>
+        </div>
+        <div class="proof-grid">
+          <article class="proof-card"><h3>Explorer details</h3><p><a href="https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr/details" target="_blank" rel="noopener">Open validator details</a> to confirm the master key, network, ledger index, version, domain verification, and agreement metrics from the Post Fiat explorer.</p></article>
+          <article class="proof-card"><h3>Validator board</h3><p><a href="https://explorer.testnet.postfiat.org/network/validators" target="_blank" rel="noopener">Open the validator board</a> to inspect the broader validator set and compare this validator against the rest of the testnet roster.</p></article>
+          <article class="proof-card"><h3>Network overview</h3><p><a href="https://explorer.testnet.postfiat.org/" target="_blank" rel="noopener">Open the Post Fiat explorer</a> to review the broader network surface, navigate validator data, and inspect the current explorer homepage.</p></article>
+          <article class="proof-card"><h3>Domain attestation</h3><p><a href="/.well-known/pft-ledger.toml">Open the TOML proof file</a> to confirm the domain-controlled validator attestation published at this site's <code>.well-known</code> path.</p></article>
+          <article class="proof-card"><h3>Machine-readable identity</h3><p><a href="/validator.json">Open <code>validator.json</code></a> to retrieve the site's stable identity, source links, and operator metadata in JSON form.</p></article>
+          <article class="proof-card"><h3>Machine-readable status</h3><p><a href="/status.json">Open <code>status.json</code></a> to inspect the latest published snapshot fields and the source URL used to refresh them.</p></article>
+        </div>
+      </section>
 
+      <section class="section" id="live-status" aria-labelledby="live-status-heading">
+        <div class="section-head">
+          <p class="section-kicker">Explorer-backed metrics</p>
+          <h2 id="live-status-heading">Live Status</h2>
+          <p class="section-summary">This section only renders approved explorer-backed fields. If the source cannot be fetched, values stay explicitly marked as unavailable rather than guessed.</p>
+        </div>
+        <div class="status-grid">
+          <article class="status-card"><p class="status-label">Master Key</p><p class="status-value mono-value" data-field="master_key">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Uptime</p><p class="status-value" data-field="uptime">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Server State (Full)</p><p class="status-value" data-field="server_state">Unavailable</p><p class="status-note">Inferred conservatively from the explorer payload when current ledger data is available.</p></article>
+          <article class="status-card"><p class="status-label">Ledger</p><p class="status-value" data-field="ledger">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Version</p><p class="status-value" data-field="version">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Domain Verified</p><p class="status-value" data-field="domain_verified">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Agreement (1H)</p><p class="status-value" data-field="agreement_1h">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Agreement (24H)</p><p class="status-value" data-field="agreement_24h">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Agreement (30D)</p><p class="status-value" data-field="agreement_30d">Unavailable</p></article>
+          <article class="status-card"><p class="status-label">Last status refresh</p><p class="status-value" data-field="last_refresh">Unavailable</p><p class="status-note">Source: <a class="inline-link" href="https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr/details" target="_blank" rel="noopener">approved explorer details page</a>.</p></article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="journal-node-heading">
+        <div class="section-head">
+          <p class="section-kicker">Ongoing updates</p>
+          <h2 id="journal-node-heading">Journal Node</h2>
+          <p class="section-summary">The journal node is the running public log for validator operations, site updates, and related project context. It now has its own crawlable page, unique metadata, and timestamped entries.</p>
+        </div>
+        <div class="journal-layout">
+          <div class="journal-box"><p>The homepage is the verification layer. The journal page is the chronological layer. Use the journal when you want to see what changed, when it changed, and where operational notes live.</p></div>
+          <div class="journal-side">
+            <p class="list-note">Current journal coverage:</p>
+            <ul>
+              <li>validator site revisions</li>
+              <li>proof and status source notes</li>
+              <li>project context links</li>
+            </ul>
+            <p style="margin-top: 14px;"><a class="inline-link" href="/journalnode/">View the Journal Node &rarr;</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="faq-heading">
+        <div class="section-head">
+          <p class="section-kicker">Trust questions</p>
+          <h2 id="faq-heading">FAQ</h2>
+          <p class="section-summary">This section answers the obvious first-pass questions a person or model will ask when evaluating the validator surface.</p>
+        </div>
+        <div class="faq-grid">
+          <article class="faq-card"><h3>What does this validator do?</h3><p>It is a Post Fiat testnet validator operated by @wizbubba. This site exists to package the validator's identity, proof links, and status context in one place.</p></article>
+          <article class="faq-card"><h3>How do I verify this public key?</h3><p>Compare the public key shown here against the explorer details page, the machine-readable JSON endpoints on this site, and the domain attestation file in <code>/.well-known/</code>.</p></article>
+          <article class="faq-card"><h3>What is the Journal Node?</h3><p>It is the running public log for validator-related updates on this domain. It complements the homepage by giving chronological context instead of only a static summary.</p></article>
+          <article class="faq-card"><h3>Where do the status metrics come from?</h3><p>The live status section is backed by the Post Fiat explorer source for this validator. If the explorer is unavailable, the site shows <code>Unavailable</code> instead of filling values from guesses.</p></article>
+          <article class="faq-card"><h3>How often is this page updated?</h3><p>Static site content updates when the repo changes. The live status section refreshes from the approved explorer source on page load whenever the source is reachable.</p></article>
+          <article class="faq-card"><h3>What is this page not?</h3><p>This is a validator trust surface, not a full explorer and not a general Post Fiat network explainer. It is intentionally narrow: identity, proof, status, and updates.</p></article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="machine-readable-heading">
+        <div class="section-head">
+          <p class="section-kicker">Endpoints</p>
+          <h2 id="machine-readable-heading">Machine-readable endpoints</h2>
+          <p class="section-summary">These files are intended for scripts, crawlers, and downstream trust tooling that needs a stable JSON surface instead of scraping HTML.</p>
+        </div>
+        <div class="endpoint-list">
+          <div class="endpoint-item"><strong><a class="inline-link" href="/validator.json">/validator.json</a></strong>Stable identity, operator, public key, verification links, and site purpose.</div>
+          <div class="endpoint-item"><strong><a class="inline-link" href="/status.json">/status.json</a></strong>Latest published snapshot fields, source URL, and snapshot refresh timestamp.</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer-grid">
+      <article class="footer-card"><h3>Contact</h3><p><a href="https://x.com/WizBubba" target="_blank" rel="noopener">@wizbubba</a></p></article>
+      <article class="footer-card"><h3>Update policy</h3><p>Static content is edited in this repo. Explorer-backed fields refresh client-side when available, and the JSON snapshot can be updated independently.</p></article>
+      <article class="footer-card"><h3>Page scope</h3><p>This site is a validator trust surface for verification, not a replacement for the explorer or the broader validator board.</p></article>
+    </footer>
   </div>
+
+  <script>
+    (function () {
+      var endpoint = "https://vhs.testnet.postfiat.org/v1/network/validator/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr";
+      var uptimeStart = new Date("2026-02-12T09:58:00-05:00");
+      var fields = {
+        master_key: document.querySelector('[data-field="master_key"]'),
+        uptime: document.querySelector('[data-field="uptime"]'),
+        server_state: document.querySelector('[data-field="server_state"]'),
+        ledger: document.querySelector('[data-field="ledger"]'),
+        version: document.querySelector('[data-field="version"]'),
+        domain_verified: document.querySelector('[data-field="domain_verified"]'),
+        agreement_1h: document.querySelector('[data-field="agreement_1h"]'),
+        agreement_24h: document.querySelector('[data-field="agreement_24h"]'),
+        agreement_30d: document.querySelector('[data-field="agreement_30d"]'),
+        last_refresh: document.querySelector('[data-field="last_refresh"]')
+      };
+      var factsStatus = document.getElementById("facts-status");
+      var factsVersion = document.getElementById("facts-version");
+
+      function setText(node, value, extraClass) {
+        if (!node) return;
+        node.textContent = value;
+        node.classList.remove("status-loading");
+        if (extraClass) node.classList.add(extraClass);
+      }
+
+      function scoreToPercent(scoreValue) {
+        if (scoreValue === null || scoreValue === undefined || scoreValue === "") return "Unavailable";
+        var parsed = Number(scoreValue);
+        if (Number.isNaN(parsed)) return "Unavailable";
+        return (parsed * 100).toFixed(3) + "%";
+      }
+
+      function formatBoolean(value) {
+        if (value === true) return "Yes";
+        if (value === false) return "No";
+        return "Unavailable";
+      }
+
+      function formatElapsed(startDate) {
+        var elapsedMs = Date.now() - startDate.getTime();
+        if (Number.isNaN(elapsedMs) || elapsedMs < 0) return "Unavailable";
+        var totalSeconds = Math.floor(elapsedMs / 1000);
+        var days = Math.floor(totalSeconds / 86400);
+        var hours = Math.floor((totalSeconds % 86400) / 3600);
+        var minutes = Math.floor((totalSeconds % 3600) / 60);
+        return days + "d " + hours + "h " + minutes + "m";
+      }
+
+      function setObservedOnlineStatus(node) {
+        if (!node) return;
+        node.classList.remove("status-loading");
+        node.classList.add("status-good");
+        node.innerHTML = '<span class="status-inline"><span class="status-dot" aria-hidden="true"></span><span>Observed online from explorer</span></span>';
+      }
+
+      function updateUptimeField(node) {
+        if (!node) return;
+        node.textContent = formatElapsed(uptimeStart) + " since 2026-02-12 09:58 EST";
+      }
+
+      fetch(endpoint, { headers: { "Accept": "application/json" } })
+        .then(function (response) {
+          if (!response.ok) throw new Error("Failed to fetch validator status");
+          return response.json();
+        })
+        .then(function (data) {
+          var observedOnline = data && data.result === "success" && typeof data.current_index === "number";
+          setText(fields.master_key, data.master_key || "Unavailable");
+          updateUptimeField(fields.uptime);
+          setText(fields.server_state, observedOnline ? "Observed online" : "Unavailable", observedOnline ? "status-good" : "");
+          setText(fields.ledger, typeof data.current_index === "number" ? String(data.current_index) : "Unavailable");
+          setText(fields.version, data.server_version || "Unavailable");
+          setText(fields.domain_verified, formatBoolean(data.domain_verified));
+          setText(fields.agreement_1h, scoreToPercent(data && data.agreement_1h ? data.agreement_1h.score : null));
+          setText(fields.agreement_24h, scoreToPercent(data && data.agreement_24h ? data.agreement_24h.score : null));
+          setText(fields.agreement_30d, scoreToPercent(data && data.agreement_30day ? data.agreement_30day.score : null));
+          setText(fields.last_refresh, new Date().toISOString());
+          if (observedOnline) {
+            setObservedOnlineStatus(factsStatus);
+          } else {
+            setText(factsStatus, "Unavailable");
+          }
+          setText(factsVersion, data.server_version || "Unavailable");
+          window.setInterval(function () {
+            updateUptimeField(fields.uptime);
+          }, 60000);
+        })
+        .catch(function () {
+          setText(fields.last_refresh, "Unavailable");
+          setText(factsStatus, "Unavailable");
+          setText(factsVersion, "Unavailable");
+        });
+    }());
+  </script>
 </body>
 </html>

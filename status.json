@@ -1,0 +1,18 @@
+{
+  "operator": "wizbubba",
+  "network": "post-fiat-testnet",
+  "public_key": "nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr",
+  "status": "observed_online",
+  "master_key": "nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr",
+  "uptime": "Running since 2026-02-12T09:58:00-05:00",
+  "server_state_full": "Observed online",
+  "ledger": 1601073,
+  "version": "1.0.0",
+  "domain_verified": true,
+  "agreement_1h": "1.00000",
+  "agreement_24h": "1.00000",
+  "agreement_30d": "0.99977",
+  "source_url": "https://explorer.testnet.postfiat.org/validators/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr/details",
+  "source_endpoint": "https://vhs.testnet.postfiat.org/v1/network/validator/nHUzc5XzsmweRV6aNyUQJD5eRUM4TT4tVCBv5DKx6T7Buq4gn9Lr",
+  "last_updated_utc": "2026-04-03T09:12:05Z"
+}
