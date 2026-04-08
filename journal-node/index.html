@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journal Node | Validator Audit Agent | wizbubba</title>
+  <meta name="description" content="Public explainer for Journal Node, the wizbubba LLM-optimization suite on the Post Fiat Task Node. Learn the /audit workflow, supported models, expected gist output, and how validators should use the report.">
+  <link rel="canonical" href="https://pft.wizbubba.xyz/journal-node">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Journal Node | Validator Audit Agent">
+  <meta property="og:description" content="Launch the public Journal Node agent, submit one validator webpage URL, choose ChatGPT 5.4 or Claude Opus 4.6, and receive a public gist audit report.">
+  <meta property="og:url" content="https://pft.wizbubba.xyz/journal-node">
+  <meta property="og:image" content="https://pft.wizbubba.xyz/assets/graphic.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Journal Node | Validator Audit Agent">
+  <meta name="twitter:description" content="Public explainer for the Post Fiat validator webpage audit agent by wizbubba.">
+  <meta name="theme-color" content="#0f1210">
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --paper: rgba(255, 252, 245, 0.86);
+      --panel: rgba(255, 250, 241, 0.92);
+      --panel-strong: #fffaf0;
+      --ink: #11110f;
+      --muted: #5f5a4f;
+      --accent: #9f2b00;
+      --accent-soft: rgba(159, 43, 0, 0.1);
+      --line: rgba(17, 17, 15, 0.12);
+      --shadow: 0 24px 60px rgba(17, 17, 15, 0.08);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --content-width: 1180px;
+      --sans: "Work Sans", "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(159, 43, 0, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(31, 73, 54, 0.1), transparent 24%),
+        linear-gradient(180deg, #f4efe6 0%, #efe8db 52%, #f7f2e7 100%);
+      font-family: var(--sans);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      overflow-wrap: anywhere;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.96em;
+      overflow-wrap: anywhere;
+    }
+
+    .shell {
+      width: min(calc(100% - 32px), var(--content-width));
+      margin: 0 auto;
+      padding: 28px 0 72px;
+    }
+
+    .topbar,
+    .hero-grid,
+    .section,
+    .callout {
+      backdrop-filter: blur(14px);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-radius: 999px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+
+    .topbar-title {
+      font-size: 0.88rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .topbar-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .pill-link {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      text-decoration: none;
+      font-size: 0.92rem;
+      background: rgba(255, 255, 255, 0.5);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .pill-link:hover,
+    .pill-link:focus-visible,
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .pill-link:hover,
+    .pill-link:focus-visible {
+      border-color: rgba(17, 17, 15, 0.24);
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .hero-copy,
+    .hero-side,
+    .section-head,
+    .callout {
+      min-width: 0;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .step-number {
+      margin: 0;
+      font-size: 0.84rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(2.6rem, 5vw, 4.6rem);
+      line-height: 1.05;
+      max-width: 10ch;
+    }
+
+    h2 {
+      font-size: clamp(1.45rem, 2vw, 1.95rem);
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+    }
+
+    .lede,
+    .section-summary,
+    .card p,
+    .callout p,
+    .hero-note p,
+    li {
+      color: var(--muted);
+    }
+
+    .hero-actions,
+    .signal-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      max-width: 100%;
+      padding: 0 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1px solid transparent;
+      font-weight: 600;
+      transition: transform 160ms ease, opacity 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .button-primary {
+      color: #fffaf5;
+      background: linear-gradient(135deg, #8d2500 0%, #b33f11 100%);
+      box-shadow: 0 18px 36px rgba(159, 43, 0, 0.18);
+    }
+
+    .button-secondary {
+      background: rgba(255, 255, 255, 0.64);
+      border-color: var(--line);
+    }
+
+    .signal {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(159, 43, 0, 0.12);
+      font-size: 0.87rem;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero-card,
+    .card,
+    .step,
+    .callout,
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--panel);
+    }
+
+    .hero-card,
+    .card,
+    .callout {
+      padding: 18px;
+    }
+
+    .hero-card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: calc(var(--radius-md) - 4px);
+      margin-bottom: 12px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .main-grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .section {
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+
+    .workflow-grid,
+    .use-grid,
+    .stats-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .workflow-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .use-grid,
+    .stats-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .step,
+    .stat {
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .step code,
+    .mono {
+      font-family: var(--mono);
+    }
+
+    .card ul,
+    .callout ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+    }
+
+    .callout {
+      display: grid;
+      gap: 14px;
+      background: var(--panel-strong);
+    }
+
+    .inline-link {
+      text-decoration-color: rgba(159, 43, 0, 0.4);
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .workflow-grid,
+      .use-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(calc(100% - 20px), var(--content-width));
+        padding-top: 16px;
+      }
+
+      .topbar,
+      .hero-grid,
+      .section { padding: 20px; }
+
+      h1 { font-size: clamp(2.1rem, 12vw, 3.1rem); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="topbar" aria-label="Primary">
+      <div class="topbar-title">Journal Node</div>
+      <div class="topbar-nav">
+        <a class="pill-link" href="/">Validator</a>
+        <a class="pill-link" href="/change-log/">Change Log</a>
+        <a class="pill-link" href="#audit-flow">/audit Flow</a>
+        <a class="pill-link" href="#use-the-report">Use the Report</a>
+        <a class="pill-link" href="https://tasknode.postfiat.org/inbox?address=rpQrSa3Hh5grVQ4jaasmxbgYfwCv9g86KR" target="_blank" rel="noopener">Launch Agent</a>
+      </div>
+    </nav>
+
+    <header class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Post Fiat Task Node Agent</p>
+        <h1>Journal Node</h1>
+        <p class="lede">Journal Node is the LLM-optimization suite by Wizbubba: investment thesis tooling and Post Fiat validator webpage scoring tools. Its current public command, <code>/audit</code>, is built for validators who want a hard-scored review of one public validator webpage before they start rewriting.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://tasknode.postfiat.org/inbox?address=rpQrSa3Hh5grVQ4jaasmxbgYfwCv9g86KR" target="_blank" rel="noopener">Launch Journal Node</a>
+          <a class="button button-secondary" href="#audit-flow">See the audit workflow</a>
+        </div>
+        <div class="signal-strip" aria-label="Journal Node summary">
+          <span class="signal">Input: one public validator webpage URL</span>
+          <span class="signal">Models: ChatGPT 5.4 or Claude Opus 4.6</span>
+          <span class="signal">Output: public GitHub gist audit report</span>
+        </div>
+      </div>
+
+      <aside class="hero-side">
+        <div class="hero-card">
+          <img src="/assets/graphic.jpg" alt="Validator site hero graphic reused on the Journal Node explainer page">
+          <p>Journal Node packages the validator audit as a public agent flow: bring one live webpage URL, choose a model, and get a structured gist report that an AI coding tool can ingest directly.</p>
+        </div>
+        <div class="hero-card hero-note">
+          <h2>Who this is for</h2>
+          <p>Post Fiat validators who already have a public webpage and want a concrete scoring pass across LLM readability, trust signals, structural clarity, and scoring readiness.</p>
+        </div>
+      </aside>
+    </header>
+
+    <main class="main-grid">
+      <section class="section" aria-labelledby="what-it-does">
+        <div class="section-head">
+          <p class="section-kicker">Agent scope</p>
+          <h2 id="what-it-does">What Journal Node does</h2>
+          <p class="section-summary">The validator audit agent applies a deterministic rubric to a validator webpage and returns a report built for action, not vague encouragement. The canonical context emphasizes harsh scoring, evidence packaging, claim boundedness, machine readability, trust framing, and clear next-step rewrites.</p>
+        </div>
+        <div class="stats-grid">
+          <article class="stat">
+            <h3>One command</h3>
+            <p>The current public flow is <code>/audit</code>. It focuses on the validator webpage audit product rather than generic Journal Node copy.</p>
+          </article>
+          <article class="stat">
+            <h3>One page in</h3>
+            <p>Submit one public validator webpage URL as the input target. The agent audits what is actually on the live page, not what you intended to publish.</p>
+          </article>
+          <article class="stat">
+            <h3>One gist out</h3>
+            <p>You receive a public GitHub gist report with criterion scores, framing analysis, and concrete rewrite instructions.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="audit-flow" aria-labelledby="audit-flow-heading">
+        <div class="section-head">
+          <p class="section-kicker">Workflow</p>
+          <h2 id="audit-flow-heading">The <code>/audit</code> flow, end to end</h2>
+          <p class="section-summary">This is the public access path: open the Post Fiat agents interface, launch Journal Node, provide a single validator webpage URL, choose a supported model, and wait for the gist report.</p>
+        </div>
+        <div class="workflow-grid">
+          <article class="step">
+            <p class="step-number">Step 1</p>
+            <h3>Open the public agents interface</h3>
+            <p>Launch the agent from the public inbox at <a class="inline-link" href="https://tasknode.postfiat.org/inbox?address=rpQrSa3Hh5grVQ4jaasmxbgYfwCv9g86KR" target="_blank" rel="noopener">tasknode.postfiat.org</a>. That interface is the access point for the Journal Node agent.</p>
+          </article>
+          <article class="step">
+            <p class="step-number">Step 2</p>
+            <h3>Submit one validator webpage URL</h3>
+            <p>Give the agent one public validator webpage URL. The intended input is a live, directly fetchable validator site that can be scored as a public trust surface.</p>
+          </article>
+          <article class="step">
+            <p class="step-number">Step 3</p>
+            <h3>Choose the model</h3>
+            <p>The current supported model options are <code>ChatGPT 5.4</code> and <code>Claude Opus 4.6</code>. Pick the model you want to run the audit with before the report is generated.</p>
+          </article>
+          <article class="step">
+            <p class="step-number">Step 4</p>
+            <h3>Receive the public gist report</h3>
+            <p>The output is a public GitHub gist audit report. Expect scored criteria, phase classification, claim inventory, framing analysis, and rewrite-ready instructions for improving the webpage.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="report-heading">
+        <div class="section-head">
+          <p class="section-kicker">Report shape</p>
+          <h2 id="report-heading">What the audit report covers</h2>
+          <p class="section-summary">The report structure is meant to be legible to both humans and downstream coding agents. It scores the page harshly, then turns the weak points into concrete rewrite work.</p>
+        </div>
+        <div class="use-grid">
+          <article class="card">
+            <h3>Scoring</h3>
+            <p>Criterion-by-criterion scoring across evidence packaging, claim precision, LLM interpretability, trust framing, comparison clarity, technical completeness, readability, and freshness.</p>
+          </article>
+          <article class="card">
+            <h3>Diagnosis</h3>
+            <p>Phase classification, claim labeling, and framing analysis that distinguish verifiable strengths from vague or ungrounded copy.</p>
+          </article>
+          <article class="card">
+            <h3>Execution notes</h3>
+            <p>Prioritized rewrite suggestions that can be handed directly to an AI coding tool to improve structure, proof packaging, and copy quality on the next pass.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="use-the-report" aria-labelledby="use-the-report-heading">
+        <div class="section-head">
+          <p class="section-kicker">Validator onboarding</p>
+          <h2 id="use-the-report-heading">How validators should use the audit output</h2>
+          <p class="section-summary">The point of the audit is not to admire the score. It is to tighten the page so models and human readers can extract trust signals quickly and score the site more favorably on the next pass.</p>
+        </div>
+        <div class="use-grid">
+          <article class="card">
+            <h3>Improve LLM readability</h3>
+            <p>Use the report to make headings, key-value facts, links, and machine-readable identifiers easier to parse in one pass. Reduce filler and move important technical facts out of vague prose blocks.</p>
+          </article>
+          <article class="card">
+            <h3>Strengthen trust signals</h3>
+            <p>Add proof-backed claims, explicit verification paths, bounded security language, and concrete performance evidence. The rubric rewards receipts over abstractions.</p>
+          </article>
+          <article class="card">
+            <h3>Prepare for better scoring</h3>
+            <p>Feed the public gist into your coding workflow, implement the highest-impact fixes first, republish, and rerun <code>/audit</code>. Use the score delta to measure whether the page actually improved.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="callout" aria-labelledby="launch-heading">
+        <p class="section-kicker">Launch instruction</p>
+        <h2 id="launch-heading">Run the public validator audit agent</h2>
+        <p>Open the public agents interface, launch Journal Node, submit one public validator webpage URL, choose <code>ChatGPT 5.4</code> or <code>Claude Opus 4.6</code>, and wait for the public gist report.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://tasknode.postfiat.org/inbox?address=rpQrSa3Hh5grVQ4jaasmxbgYfwCv9g86KR" target="_blank" rel="noopener">Go to Journal Node</a>
+          <a class="button button-secondary" href="https://gist.github.com/journalnode/fc0e4005772889cb188a1ad6c2b3a824" target="_blank" rel="noopener">Read canonical audit context</a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
