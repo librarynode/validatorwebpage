@@ -249,11 +249,13 @@
     }
 
     .hero-card img {
+      display: block;
       width: 100%;
-      aspect-ratio: 4 / 3;
-      object-fit: cover;
+      height: auto;
+      max-width: 420px;
+      margin: 0 auto 12px;
       border-radius: calc(var(--radius-md) - 4px);
-      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.88);
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
     }
 
@@ -345,7 +347,7 @@
     <nav class="topbar" aria-label="Primary">
       <div class="topbar-title">Journal Node</div>
       <div class="topbar-nav">
-        <a class="pill-link" href="/">Validator</a>
+        <a class="pill-link" href="/">Home</a>
         <a class="pill-link" href="/change-log/">Change Log</a>
         <a class="pill-link" href="#audit-flow">/audit Flow</a>
         <a class="pill-link" href="#use-the-report">Use the Report</a>
